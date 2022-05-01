@@ -15,7 +15,7 @@ class MainTabBarController: UITabBarController {
     let savedVC = SavedViewController()
     let settingVC = SettingViewController()
     
-    private lazy var homeTab: UITabBarItem = {
+    let homeTab: UITabBarItem = {
         let tabBarItem = UITabBarItem(
             title: "홈",
             image: UIImage(systemName: "house"),
@@ -25,7 +25,7 @@ class MainTabBarController: UITabBarController {
         return tabBarItem
     }()
     
-    private lazy var searchTab: UITabBarItem = {
+    let searchTab: UITabBarItem = {
         let tabBarItem = UITabBarItem(
             title: "검색",
             image: UIImage(systemName: "magnifyingglass"),
@@ -35,7 +35,7 @@ class MainTabBarController: UITabBarController {
         return tabBarItem
     }()
 
-    private lazy var upcomingVideoTab: UITabBarItem = {
+    let upcomingVideoTab: UITabBarItem = {
         let tabBarItem = UITabBarItem(
             title: "공개예정",
             image: UIImage(systemName: "play.rectangle"),
@@ -45,7 +45,7 @@ class MainTabBarController: UITabBarController {
         return tabBarItem
     }()
 
-    private lazy var savedTab: UITabBarItem = {
+    let savedTab: UITabBarItem = {
         let tabBarItem = UITabBarItem(
             title: "저장된 콘텐츠 목록",
             image: UIImage(systemName: "square.and.arrow.down"),
@@ -55,7 +55,7 @@ class MainTabBarController: UITabBarController {
         return tabBarItem
     }()
 
-    private lazy var settingTab: UITabBarItem = {
+    let settingTab: UITabBarItem = {
         let tabBarItem = UITabBarItem(
             title: "설정",
             image: UIImage(systemName: "gear"),
@@ -64,8 +64,6 @@ class MainTabBarController: UITabBarController {
         
         return tabBarItem
     }()
-
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()

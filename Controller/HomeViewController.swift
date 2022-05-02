@@ -8,36 +8,17 @@
 import UIKit
 import SnapKit
 
-enum Section: String, CaseIterable {
-    case award
-    case hot
-    case my
-    
-    var sectionTitle: String {
-        switch self {
-        case .award:
-            return "아카데미 호평 현황"
-        case .hot:
-            return "취향저격 HOT 콘텐츠"
-        case .my:
-            return "내가 찜한 콘텐츠"
-        }
-    }
-}
 
 class HomeViewController: UIViewController {
     
+    let viewModel = HomeViewModel()
+    
     lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.minimumInteritemSpacing = 16
-        layout.sectionInset = UIEdgeInsets(top: 16, left: 8, bottom: 0, right: 8)
-        layout.itemSize = CGSize(width: 120, height: 184)
-
+        let layout = createLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: MovieCollectionViewCell.identifier)
         collectionView.register(MovieCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: MovieCollectionHeaderView.identifier)
         collectionView.dataSource = self
-        collectionView.delegate = self
 
         return collectionView
     }()
@@ -109,13 +90,12 @@ class HomeViewController: UIViewController {
 
         topView.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview()
-            $0.height.equalTo(400)
+            $0.height.equalTo(250)
         }
         
         collectionView.snp.makeConstraints {
             $0.top.equalTo(topView.snp.bottom)
-            $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(scrollView)
+            $0.bottom.leading.trailing.equalToSuperview()
         }
         
         [ playButton, infoButton ]
@@ -131,6 +111,31 @@ class HomeViewController: UIViewController {
             $0.bottom.equalToSuperview().inset(16)
         }
     }
+    
+    func createLayout() -> UICollectionViewCompositionalLayout {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(120.0), heightDimension: .absolute(160.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        item.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)
+        
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9), heightDimension: .absolute(160.0))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 3)
+        
+        let sectionSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(160.0))
+        let section = NSCollectionLayoutSection(group: group)
+        
+        let header = createHeaderLayout()
+        section.boundarySupplementaryItems = [ header ]
+        section.orthogonalScrollingBehavior = .continuous
+        
+        return UICollectionViewCompositionalLayout(section: section)
+    }
+    
+    func createHeaderLayout() -> NSCollectionLayoutBoundarySupplementaryItem {
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(30))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .topLeading)
+        
+        return header
+    }
 }
 
 extension HomeViewController: UICollectionViewDataSource {
@@ -145,7 +150,7 @@ extension HomeViewController: UICollectionViewDataSource {
         } else if section == 1 {
             return 4
         } else {
-            return 5
+            return 10
         }
     }
     
@@ -174,12 +179,5 @@ extension HomeViewController: UICollectionViewDataSource {
         }
         
         return header
-    }
-}
-
-extension HomeViewController: UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: UIScreen.main.bounds.width, height: 16)
     }
 }

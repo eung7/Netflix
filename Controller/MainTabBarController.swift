@@ -72,7 +72,7 @@ class MainTabBarController: UITabBarController {
     }
     
     func setupTabBar() {
-        tabBar.tintColor = .systemPink
+        tabBar.tintColor = .black
         
         viewControllers = [ homeVC, searchVC, upcomingVideoVC, savedVC, settingVC ]
         

@@ -13,6 +13,8 @@ class HomeViewController: UIViewController {
     
     let viewModel = HomeViewModel()
     
+    var movies: [UIImage] = []
+    
     lazy var collectionView: UICollectionView = {
         let layout = createLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -28,8 +30,30 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         
         setupUI()
+        fetchMovie()
     }
     
+    func fetchMovie() {
+        for i in 1...18 {
+            guard let image = UIImage(named: "img_movie_\(i)") else { return }
+            movies.append(image)
+        }
+    }
+    
+//    static func fetch(_ type: Section) -> [DummyMovie] {
+//        switch type {
+//        case .award:
+//            let movies = (1..<10).map { DummyMovie(thumbnail: UIImage(named: "img_movie_\($0)")!) }
+//            return movies
+//        case .hot:
+//            let movies = (10..<19).map { DummyMovie(thumbnail: UIImage(named: "img_movie_\($0)")!) }
+//            return movies
+//        case .my:
+//            let movies = (1..<10).map { $0 * 2 }.map { DummyMovie(thumbnail: UIImage(named: "img_movie_\($0)")!) }
+//            return movies
+//        }
+//    }
+
     func setupUI() {
         view.addSubview(collectionView)
 
@@ -99,11 +123,11 @@ extension HomeViewController: UICollectionViewDataSource {
         case 0:
             return 1
         case 1:
-            return 10
+            return movies.count
         case 2:
-            return 10
+            return movies.count
         case 3:
-            return 10
+            return movies.count
         default:
             return 0
         }
@@ -114,18 +138,19 @@ extension HomeViewController: UICollectionViewDataSource {
             let mainCell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieTopCollectionViewCell.identifier, for: indexPath) as? MovieTopCollectionViewCell,
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCollectionViewCell.identifier, for: indexPath) as? MovieCollectionViewCell else {
             return UICollectionViewCell() }
+        cell.backgroundColor = .systemBackground
         
         switch indexPath.section {
         case 0:
             return mainCell
         case 1:
-            cell.backgroundColor = .green
+            cell.movieImage.image = movies[indexPath.row]
             return cell
         case 2:
-            cell.backgroundColor = .green
+            cell.movieImage.image = movies[indexPath.row]
             return cell
         case 3:
-            cell.backgroundColor = .green
+            cell.movieImage.image = movies[indexPath.row]
             return cell
         default:
             return UICollectionViewCell()

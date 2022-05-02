@@ -12,12 +12,18 @@ class MovieCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "MovieCollectionViewCell"
     
-    let movieImage: UIImageView = {
+    var movieImage: UIImageView = {
         let imageView =  UIImageView()
         imageView.backgroundColor = .systemBlue
         
         return imageView
     }()
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        setupUI()
+    }
     
     func setupUI() {
         contentView.addSubview(movieImage)

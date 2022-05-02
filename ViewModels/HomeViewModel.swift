@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Section: String, CaseIterable {
+enum Section: Int, CaseIterable {
     case award
     case hot
     case my

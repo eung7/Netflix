@@ -9,17 +9,17 @@ import UIKit
 import SnapKit
 
 enum Section: String, CaseIterable {
-    case section1
-    case section2
-    case section3
+    case award
+    case hot
+    case my
     
     var sectionTitle: String {
         switch self {
-        case .section1:
+        case .award:
             return "아카데미 호평 현황"
-        case .section2:
+        case .hot:
             return "취향저격 HOT 콘텐츠"
-        case .section3:
+        case .my:
             return "내가 찜한 콘텐츠"
         }
     }
@@ -29,32 +29,28 @@ class HomeViewController: UIViewController {
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 100, height: 200)
         layout.minimumInteritemSpacing = 16
-        
+        layout.sectionInset = UIEdgeInsets(top: 16, left: 8, bottom: 0, right: 8)
+        layout.itemSize = CGSize(width: 120, height: 184)
+
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: MovieCollectionViewCell.identifier)
+        collectionView.register(MovieCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: MovieCollectionHeaderView.identifier)
         collectionView.dataSource = self
-        
+        collectionView.delegate = self
+
         return collectionView
     }()
     
     let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.backgroundColor = .systemBackground
-        scrollView.frame = UIScreen.main.bounds
-        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-        scrollView.isScrollEnabled = true
-        scrollView.isPagingEnabled = true
         scrollView.alwaysBounceVertical = true
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
         
         return scrollView
     }()
     
-    let contentView: UIView = {
+    let contentsView: UIView = {
         let view = UIView()
         
         return view
@@ -97,20 +93,20 @@ class HomeViewController: UIViewController {
         view.addSubview(scrollView)
         
         scrollView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.edges.equalTo(view)
         }
         
-        scrollView.addSubview(contentView)
+        scrollView.addSubview(contentsView)
         
-        contentView.snp.makeConstraints {
+        contentsView.snp.makeConstraints {
             $0.edges.equalToSuperview()
             $0.width.equalTo(UIScreen.main.bounds.width)
             $0.height.equalTo(UIScreen.main.bounds.height)
         }
-        
+
         [ topView, collectionView ]
-            .forEach { contentView.addSubview($0) }
-        
+            .forEach { contentsView.addSubview($0) }
+
         topView.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview()
             $0.height.equalTo(400)
@@ -118,7 +114,8 @@ class HomeViewController: UIViewController {
         
         collectionView.snp.makeConstraints {
             $0.top.equalTo(topView.snp.bottom)
-            $0.leading.trailing.bottom.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(scrollView)
         }
         
         [ playButton, infoButton ]
@@ -137,19 +134,52 @@ class HomeViewController: UIViewController {
 }
 
 extension HomeViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCollectionViewCell.identifier, for: indexPath)
-        cell.backgroundColor = .systemBlue
-        // TODO: Use Custom Cell
-        return cell
-    }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return Section.allCases.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // TODO: Making MovieData to fill collectionView
-        return 10
+        if section == 0 {
+            return 3
+        } else if section == 1 {
+            return 4
+        } else {
+            return 5
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCollectionViewCell.identifier, for: indexPath) as? MovieCollectionViewCell else { return UICollectionViewCell() }
+        
+        if indexPath.section == 0 {
+            cell.backgroundColor = .black
+        } else if indexPath.section == 1 {
+            cell.backgroundColor = .systemYellow
+        } else {
+            cell.backgroundColor = .systemBlue
+        }
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: MovieCollectionHeaderView.identifier, for: indexPath) as? MovieCollectionHeaderView else { return UICollectionReusableView() }
+        if indexPath.section == 0 {
+            header.titleLabel.text = Section.award.sectionTitle
+        } else if indexPath.section == 1 {
+            header.titleLabel.text = Section.hot.sectionTitle
+        } else {
+            header.titleLabel.text = Section.my.sectionTitle
+        }
+        
+        return header
+    }
+}
+
+extension HomeViewController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: UIScreen.main.bounds.width, height: 16)
     }
 }

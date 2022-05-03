@@ -13,8 +13,6 @@ class HomeViewController: UIViewController {
     
     let viewModel = HomeViewModel()
     
-    var movies: [UIImage] = []
-    
     lazy var collectionView: UICollectionView = {
         let layout = createLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -30,29 +28,7 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         
         setupUI()
-        fetchMovie()
     }
-    
-    func fetchMovie() {
-        for i in 1...18 {
-            guard let image = UIImage(named: "img_movie_\(i)") else { return }
-            movies.append(image)
-        }
-    }
-    
-//    static func fetch(_ type: Section) -> [DummyMovie] {
-//        switch type {
-//        case .award:
-//            let movies = (1..<10).map { DummyMovie(thumbnail: UIImage(named: "img_movie_\($0)")!) }
-//            return movies
-//        case .hot:
-//            let movies = (10..<19).map { DummyMovie(thumbnail: UIImage(named: "img_movie_\($0)")!) }
-//            return movies
-//        case .my:
-//            let movies = (1..<10).map { $0 * 2 }.map { DummyMovie(thumbnail: UIImage(named: "img_movie_\($0)")!) }
-//            return movies
-//        }
-//    }
 
     func setupUI() {
         view.addSubview(collectionView)
@@ -123,11 +99,11 @@ extension HomeViewController: UICollectionViewDataSource {
         case 0:
             return 1
         case 1:
-            return movies.count
+            return viewModel.awardMovies.count
         case 2:
-            return movies.count
+            return viewModel.hotMovies.count
         case 3:
-            return movies.count
+            return viewModel.myMovies.count
         default:
             return 0
         }
@@ -144,13 +120,13 @@ extension HomeViewController: UICollectionViewDataSource {
         case 0:
             return mainCell
         case 1:
-            cell.movieImage.image = movies[indexPath.row]
+            cell.movieImage.image = viewModel.awardMovies[indexPath.row].thumbnail
             return cell
         case 2:
-            cell.movieImage.image = movies[indexPath.row]
+            cell.movieImage.image = viewModel.hotMovies[indexPath.row].thumbnail
             return cell
         case 3:
-            cell.movieImage.image = movies[indexPath.row]
+            cell.movieImage.image = viewModel.myMovies[indexPath.row].thumbnail
             return cell
         default:
             return UICollectionViewCell()
@@ -159,6 +135,7 @@ extension HomeViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: MovieCollectionHeaderView.identifier, for: indexPath) as? MovieCollectionHeaderView else { return UICollectionReusableView() }
+        
         if indexPath.section == 1 {
             header.titleLabel.text = Section.award.sectionTitle
         } else if indexPath.section == 2 {

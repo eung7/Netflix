@@ -33,4 +33,3 @@ class MovieCollectionViewCell: UICollectionViewCell {
         }
     }
 }
-

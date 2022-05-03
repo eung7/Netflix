@@ -8,7 +8,6 @@
 import UIKit
 import SnapKit
 
-
 class HomeViewController: UIViewController {
     
     let viewModel = HomeViewModel()
@@ -17,7 +16,7 @@ class HomeViewController: UIViewController {
         let layout = createLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: MovieCollectionViewCell.identifier)
-        collectionView.register(MovieTopCollectionViewCell.self, forCellWithReuseIdentifier: MovieTopCollectionViewCell.identifier)
+        collectionView.register(MovieMainCollectionViewCell.self, forCellWithReuseIdentifier: MovieMainCollectionViewCell.identifier)
         collectionView.register(MovieCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: MovieCollectionHeaderView.identifier)
         collectionView.dataSource = self
 
@@ -91,7 +90,7 @@ class HomeViewController: UIViewController {
 extension HomeViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return Section.allCases.count + 1
+        return Section.allCases.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -111,7 +110,7 @@ extension HomeViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard
-            let mainCell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieTopCollectionViewCell.identifier, for: indexPath) as? MovieTopCollectionViewCell,
+            let mainCell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieMainCollectionViewCell.identifier, for: indexPath) as? MovieMainCollectionViewCell,
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCollectionViewCell.identifier, for: indexPath) as? MovieCollectionViewCell else {
             return UICollectionViewCell() }
         cell.backgroundColor = .systemBackground
@@ -120,13 +119,16 @@ extension HomeViewController: UICollectionViewDataSource {
         case 0:
             return mainCell
         case 1:
-            cell.movieImage.image = viewModel.awardMovies[indexPath.row].thumbnail
+            let movies = viewModel.awardMovies
+            cell.movieImage.image = movies[indexPath.row].thumbnail
             return cell
         case 2:
-            cell.movieImage.image = viewModel.hotMovies[indexPath.row].thumbnail
+            let movies = viewModel.hotMovies
+            cell.movieImage.image = movies[indexPath.row].thumbnail
             return cell
         case 3:
-            cell.movieImage.image = viewModel.myMovies[indexPath.row].thumbnail
+            let movies = viewModel.myMovies
+            cell.movieImage.image = movies[indexPath.row].thumbnail
             return cell
         default:
             return UICollectionViewCell()

@@ -1,5 +1,5 @@
 //
-//  MovieTopHeaderView.swift
+//  MovieMainCollectionViewCell.swift
 //  eung7_Netflix
 //
 //  Created by 김응철 on 2022/05/02.
@@ -8,9 +8,9 @@
 import UIKit
 import SnapKit
 
-class MovieTopCollectionViewCell: UICollectionViewCell {
+class MovieMainCollectionViewCell: UICollectionViewCell {
     
-    static let identifier = "MovieTopCollectionViewCell"
+    static let identifier = "MovieMainCollectionViewCell"
     
     let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -24,19 +24,9 @@ class MovieTopCollectionViewCell: UICollectionViewCell {
         let button = UIButton()
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "play.fill")
-        config.baseForegroundColor = .systemBackground
+        config.baseForegroundColor = .white
         button.configuration = config
 
-        return button
-    }()
-    
-    let infoButton: UIButton = {
-        let button = UIButton()
-        var config = UIButton.Configuration.plain()
-        config.image = UIImage(systemName: "info.circle")
-        config.baseForegroundColor = .systemBackground
-        button.configuration = config
-        
         return button
     }()
     
@@ -46,7 +36,7 @@ class MovieTopCollectionViewCell: UICollectionViewCell {
         self.backgroundColor = .systemBackground
         
         [
-            imageView, playButton, infoButton
+            imageView, playButton
         ]
             .forEach { contentView.addSubview($0) }
         
@@ -56,10 +46,6 @@ class MovieTopCollectionViewCell: UICollectionViewCell {
         
         playButton.snp.makeConstraints {
             $0.bottom.leading.equalToSuperview().inset(16)
-        }
-        
-        infoButton.snp.makeConstraints {
-            $0.bottom.trailing.equalToSuperview().inset(16)
         }
     }
 }

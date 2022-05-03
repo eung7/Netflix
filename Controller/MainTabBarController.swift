@@ -44,7 +44,7 @@ class MainTabBarController: UITabBarController {
         
         return tabBarItem
     }()
-
+    
     let savedTab: UITabBarItem = {
         let tabBarItem = UITabBarItem(
             title: "저장된 콘텐츠 목록",
@@ -72,7 +72,7 @@ class MainTabBarController: UITabBarController {
     }
     
     func setupTabBar() {
-        tabBar.tintColor = .systemBackground
+        tabBar.tintColor = .systemGray
         
         viewControllers = [ homeVC, searchVC, upcomingVideoVC, savedVC, settingVC ]
         

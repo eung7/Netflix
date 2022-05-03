@@ -84,7 +84,6 @@ class HomeViewController: UIViewController {
         
         return header
     }
-    
 }
 
 extension HomeViewController: UICollectionViewDataSource {

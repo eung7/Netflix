@@ -11,8 +11,10 @@ import Kingfisher
 
 class SearchViewController: UIViewController {
     
+    /// ViewModel Instance
     let viewModel = SearchViewModel()
     
+    /// SearchBar 속성 정의
     lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         /// deleate를 받기위해 lazy 속성을 부여했다. 만약 부여하지 않으면 Class 초기화 전에 상수가 초기화 되지 않음..
@@ -21,12 +23,14 @@ class SearchViewController: UIViewController {
         return searchBar
     }()
     
+    /// tapGesture 속성 정의
     lazy var tapGesture: UITapGestureRecognizer = {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapBackground))
         
         return tapGesture
     }()
     
+    /// CollectionView 속성 정의
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: 120, height: 160.0)
@@ -65,6 +69,7 @@ class SearchViewController: UIViewController {
     }
 }
 
+/// @objc Method는 모두 여기로
 private extension SearchViewController {
     
     /// 빈 화면 터치시 모든 작업 종료
@@ -77,13 +82,13 @@ extension SearchViewController: UICollectionViewDataSource {
     
     /// Cell의 갯수
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.movies.count
+        return viewModel.items.count
     }
     
     /// Cell의 표현 by KingFisher
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchCollectionViewCell.identifier, for: indexPath) as? SearchCollectionViewCell else { return UICollectionViewCell() }
-        let url = URL(string: viewModel.movies[indexPath.row].poster)
+        let url = URL(string: viewModel.items[indexPath.row].poster)
         
         /// KingFisher를 이용하여 URL을 통해 이미지를 가져온다.
         /// 이미지를 가져올 때 나타내는 애니메이션도 구현 <- KingFisher의 기능
@@ -106,6 +111,7 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
 /// SearchBar 관련 Method
 extension SearchViewController: UISearchBarDelegate {
     
+    /// SearchButton(Return)이 클릭되었을 때
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let text = searchBar.text {
             viewModel.fetchMovies(from: text) {[weak self] in
@@ -114,6 +120,7 @@ extension SearchViewController: UISearchBarDelegate {
         }
     }
     
+    /// SearchBar의 Text가 변경될 때마다 실행되는 Method
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if let text = searchBar.text {
             viewModel.fetchMovies(from: text) {[weak self] in

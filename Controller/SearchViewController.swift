@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AVKit
 import SnapKit
 import Kingfisher
 
@@ -26,6 +27,7 @@ class SearchViewController: UIViewController {
     /// tapGesture 속성 정의
     lazy var tapGesture: UITapGestureRecognizer = {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapBackground))
+        tapGesture.cancelsTouchesInView = false
         
         return tapGesture
     }()
@@ -104,7 +106,15 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
     /// 특정 Cell이 클릭되었을 때
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // TODO: 특정셀이 클릭되었을 때 PlayerVC에서 동영상이 재생되도록 구현해야함
-        print(indexPath.row)
+        let trailerURL = viewModel.items[indexPath.row].trailer
+        
+        let vc = PlayerViewController()
+        vc.modalPresentationStyle = .fullScreen
+//        vc.prepareVideo(url: trailerURL)
+        
+        present(vc, animated: true, completion: {
+            vc.player?.play()
+        })
     }
 }
 
@@ -117,6 +127,7 @@ extension SearchViewController: UISearchBarDelegate {
             viewModel.fetchMovies(from: text) {[weak self] in
                 self?.collectionView.reloadData()
             }
+            view.endEditing(true)
         }
     }
     

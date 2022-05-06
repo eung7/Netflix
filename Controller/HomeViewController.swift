@@ -10,8 +10,10 @@ import SnapKit
 
 class HomeViewController: UIViewController {
     
+    /// ViewModel Instance
     let viewModel = HomeViewModel()
     
+    /// CollectionView 속성 값과 초기화
     lazy var collectionView: UICollectionView = {
         let layout = createLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -29,6 +31,7 @@ class HomeViewController: UIViewController {
         setupUI()
     }
 
+    /// Auto Layout Method
     func setupUI() {
         view.addSubview(collectionView)
 
@@ -37,17 +40,19 @@ class HomeViewController: UIViewController {
         }
     }
     
+    /// CollectionView 전체 Layout 생성
     func createLayout() -> UICollectionViewCompositionalLayout {
-        return UICollectionViewCompositionalLayout {[weak self] sectionNumber, env -> NSCollectionLayoutSection? in
+        return UICollectionViewCompositionalLayout {[unowned self] sectionNumber, env -> NSCollectionLayoutSection? in
             switch sectionNumber {
             case 0:
-                return self?.createMainLayout()
+                return self.createMainLayout()
             default:
-                return self?.createBasicLayout()
+                return self.createBasicLayout()
             }
         }
     }
     
+    /// CollectionView 섹션 1, 2, 3 Layout 생성
     func createBasicLayout() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(120.0), heightDimension: .absolute(160.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -65,6 +70,7 @@ class HomeViewController: UIViewController {
         return section
     }
     
+    /// CollectionView 섹션 0 Layout 생성
     func createMainLayout() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(400.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -78,6 +84,7 @@ class HomeViewController: UIViewController {
         return section
     }
     
+    /// CollectionView Header Layout 생성
     func createTitleHeaderLayout() -> NSCollectionLayoutBoundarySupplementaryItem {
         let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(30))
         let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .topLeading)
@@ -88,10 +95,12 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: UICollectionViewDataSource {
     
+    /// 몇 개의 Section?
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return Section.allCases.count
     }
     
+    /// Section마다 몇개의 Cell이 있는지?
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
         case 0:
@@ -107,6 +116,7 @@ extension HomeViewController: UICollectionViewDataSource {
         }
     }
     
+    /// Cell을 어떻게 표현할 건지?
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard
             let mainCell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieMainCollectionViewCell.identifier, for: indexPath) as? MovieMainCollectionViewCell,
@@ -134,6 +144,7 @@ extension HomeViewController: UICollectionViewDataSource {
         }
     }
     
+    /// Header를 어떻게 표현할건지?
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: MovieCollectionHeaderView.identifier, for: indexPath) as? MovieCollectionHeaderView else { return UICollectionReusableView() }
         

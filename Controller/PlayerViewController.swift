@@ -158,7 +158,31 @@ class PlayerViewController: UIViewController {
             // MARK: Closure안에 순환 참조
             /// weak self를 붙여주지 않으면, 현재 VCPlayer인스턴스와 클로저 간의 강한 순환 참조가 발생해서 메모리 누수가 발생 !
             /// 순환 참조 메모리 누수의 위험성을 보여줄 수 있는 보기 좋은 예시
-            self?.updateSlider(currentTime) })
+            self?.updateSlider(currentTime)
+            self?.updateRemainingText(currentTime)
+        })
+    }
+    
+    func updateRemainingText(_ currentTime: CMTime) {
+        /// 영상의 전체 길이 가져오기 (CMTime)
+        guard let duration = player?.currentItem?.duration else { return }
+        
+        let totalTime = CMTimeGetSeconds(duration)
+        let remainingTime = totalTime - CMTimeGetSeconds(currentTime)
+        let min = remainingTime / 60
+        let sec = remainingTime.truncatingRemainder(dividingBy: 60)
+        
+        let formatter = NumberFormatter()
+        /// 정수 자릿수 설정
+        formatter.minimumIntegerDigits = 2
+        /// 소수 자릿수 설정
+        formatter.minimumFractionDigits = 0
+        /// 소숫점 내림
+        formatter.roundingMode = .down
+        guard let minStr = formatter.string(from: NSNumber(value: min)),
+              let secStr = formatter.string(from: NSNumber(value: sec)) else { return }
+        
+        self.timeRemainingLabel.text = "\(minStr):\(secStr)"
     }
     
     func updateSlider(_ currentTime: CMTime) {
@@ -182,6 +206,7 @@ class PlayerViewController: UIViewController {
     }
 }
 
+// MARK: @objc Method Collection
 private extension PlayerViewController {
     @objc func didTapPauseButton(_ button: UIButton) {
         guard let player = player else { return }

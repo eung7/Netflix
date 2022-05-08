@@ -35,7 +35,10 @@ class SearchViewController: UIViewController {
     /// CollectionView 속성 정의
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 120, height: 160.0)
+        layout.itemSize = CGSize(
+            width: (UIScreen.main.bounds.width - 64) / 3,
+            height: 160.0
+        )
         layout.sectionInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -107,10 +110,12 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // TODO: 특정셀이 클릭되었을 때 PlayerVC에서 동영상이 재생되도록 구현해야함
         let trailerURL = viewModel.items[indexPath.row].trailer
+        let videoTitle = viewModel.items[indexPath.row].movieName
         
         let vc = PlayerViewController()
         vc.modalPresentationStyle = .fullScreen
-//        vc.prepareVideo(url: trailerURL)
+        vc.prepareVideo(url: trailerURL)
+        vc.videoTitleLabel.text = videoTitle
         
         present(vc, animated: true, completion: {
             vc.player?.play()

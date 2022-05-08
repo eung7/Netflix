@@ -14,9 +14,11 @@ struct Result: Codable {
 struct Item: Codable {
     let trailer: String
     let poster: String
+    let movieName: String
     
     enum CodingKeys: String, CodingKey {
         case trailer = "previewUrl"
         case poster = "artworkUrl100"
+        case movieName = "trackName"
     }
 }

@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
 
 class MovieCollectionViewCell: UICollectionViewCell {
     

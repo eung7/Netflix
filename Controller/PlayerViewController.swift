@@ -14,6 +14,9 @@ class PlayerViewController: UIViewController {
     /// 영상이 실행되는 객체인 AVPlayer
     var player: AVPlayer?
     
+    /// 애니메이션에 사용될 Timer객체 정의
+    var timer: Timer?
+    
     /// AVPlayer가 들어갈 UIView객체
     lazy var videoPlayerView: UIView = {
         let view = UIView()
@@ -25,7 +28,6 @@ class PlayerViewController: UIViewController {
     
     lazy var backgroundTapGesture: UITapGestureRecognizer = {
         let gesture = UITapGestureRecognizer(target: self, action: #selector(didTapBackground))
-//        gesture.cancelsTouchesInView = false
         
         return gesture
     }()
@@ -35,10 +37,9 @@ class PlayerViewController: UIViewController {
         var config = UIButton.Configuration.borderless()
         config.baseForegroundColor = .white
         config.baseBackgroundColor = UIColor.clear
-        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 30)
+        config.preferredSymbolConfigurationForImage =  UIImage.SymbolConfiguration(pointSize: 30)
         
-        let button = UIButton(configuration: config)
-        // [x] TODO: Button의 isHighlighted 값이 변경될때, Button BackgroundColor가 변하지 않게 조정
+        let button = AnimationButton(configuration: config)
         button.setImage(UIImage(systemName: "pause.fill"), for: .normal)
         button.setImage(UIImage(systemName: "play.fill"), for: .selected)
         button.addTarget(self, action: #selector(didTapPauseButton), for: .touchUpInside)
@@ -61,7 +62,7 @@ class PlayerViewController: UIViewController {
     /// 트레일러의 이름 Label
     lazy var videoTitleLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .regular)
+        label.font = .systemFont(ofSize: 16.0, weight: .regular)
         
         return label
     }()
@@ -218,14 +219,20 @@ class PlayerViewController: UIViewController {
 
 // MARK: @objc Method Collection
 private extension PlayerViewController {
-    @objc func didTapPauseButton(_ button: UIButton) {
+    @objc func didTapPauseButton(_ sender: UIButton) {
         guard let player = player else { return }
         
-        button.isSelected = !button.isSelected
-        
-        if button.isSelected == true {
+        /// 처음엔 sender.isSelected = false 가 들어오니까
+        ///
+        let highlightImage = sender.isSelected ? UIImage(systemName: "pause.fill") : UIImage(systemName: "play.fill")
+
+        if sender.isSelected == false {
+            sender.setImage(highlightImage, for: .normal)
+            sender.isSelected = !sender.isSelected
             player.pause()
         } else {
+            sender.setImage(highlightImage, for: .normal)
+            sender.isSelected = !sender.isSelected
             player.play()
         }
     }

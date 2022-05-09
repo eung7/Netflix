@@ -11,8 +11,6 @@ import SnapKit
 
 class PlayerViewController: UIViewController {
     
-    let viewModel = PlayerViewModel()
-    
     /// 영상이 실행되는 객체인 AVPlayer
     var player: AVPlayer?
     
@@ -23,6 +21,13 @@ class PlayerViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
+    }()
+    
+    lazy var backgroundTapGesture: UITapGestureRecognizer = {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(didTapBackground))
+//        gesture.cancelsTouchesInView = false
+        
+        return gesture
     }()
     
     /// 재생 버튼
@@ -91,6 +96,8 @@ class PlayerViewController: UIViewController {
     
     /// UI들의 addSubview, AutoLayout 설정
     func setupUI() {
+        view.addGestureRecognizer(backgroundTapGesture)
+        
         [
             playButton,
             videoTitleLabel,
@@ -145,7 +152,6 @@ class PlayerViewController: UIViewController {
         /// UIView객체에 addSublayer를 하는 Method
         videoPlayerView.layer.addSublayer(playerLayer)
         
-        // TODO: [x] CMTime을 정확히 알기
         /// 간격이 0.01초인 CMTime객체를 생성
         let interval = CMTime(seconds: 0.001, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
         /// 현재 재생되는 동영상에 0.01초 마다 관찰하는  interval을 형성하는 addPeriodicTimeObserver Method를 실행
@@ -167,11 +173,15 @@ class PlayerViewController: UIViewController {
         /// 영상의 전체 길이 가져오기 (CMTime)
         guard let duration = player?.currentItem?.duration else { return }
         
+        /// 초로 표현된 영상 전체 길이
         let totalTime = CMTimeGetSeconds(duration)
+        /// 초로 표현된 남은 영상 길이
         let remainingTime = totalTime - CMTimeGetSeconds(currentTime)
+        /// 남은 영상 길이의 분과 초를 구하기 위한 작업
         let min = remainingTime / 60
         let sec = remainingTime.truncatingRemainder(dividingBy: 60)
         
+        /// NumberFormatter Attributes 적용
         let formatter = NumberFormatter()
         /// 정수 자릿수 설정
         formatter.minimumIntegerDigits = 2
@@ -237,5 +247,16 @@ private extension PlayerViewController {
         let seekTime = CMTime(value: CMTimeValue(value), timescale: 1)
         /// 재생중인 AVPlayer에 타겟이 되는 위치로 찾아감
         player?.seek(to: seekTime)
+    }
+    
+    @objc func didTapBackground() {
+        [
+            playButton,
+            videoTitleLabel,
+            progressBar,
+            timeRemainingLabel,
+            backButton,
+        ]
+            .forEach { $0.isHidden = !$0.isHidden }
     }
 }

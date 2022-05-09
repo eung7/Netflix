@@ -87,7 +87,7 @@ extension SearchViewController: UICollectionViewDataSource {
     
     /// Cell의 갯수
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.items.count
+        return viewModel.numberOfItems
     }
     
     /// Cell의 표현 by KingFisher

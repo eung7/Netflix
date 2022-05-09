@@ -11,6 +11,8 @@ class MainTabBarController: UITabBarController {
     
     let homeVC = HomeViewController()
     let searchVC = SearchViewController()
+    
+    // 사용하지 않는 Mock VC
     let upcomingVideoVC = UpcomingVideoViewController()
     let savedVC = SavedViewController()
     let settingVC = SettingViewController()
@@ -74,6 +76,7 @@ class MainTabBarController: UITabBarController {
     func setupTabBar() {
         tabBar.tintColor = .systemGray
         
+        /// Setup TabBarVC
         viewControllers = [ homeVC, searchVC, upcomingVideoVC, savedVC, settingVC ]
         
         homeVC.tabBarItem = homeTab

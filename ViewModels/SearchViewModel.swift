@@ -14,6 +14,10 @@ class SearchViewModel {
     /// SearchVC에서 하나의 인스턴스만을 참조하고 있으므로 전역변수처럼 쓸 수 있다.
     var items: [Item] = []
     
+    var numberOfItems: Int {
+        return items.count
+    }
+    
     /// URLSession을 이용한 Network Method
     func fetchMovies(from term: String, completion: @escaping () -> Void) {
         /// 한글, 띄어쓰기 등의 인식을 위해 URLEncoding하는 Code
@@ -76,7 +80,7 @@ class SearchViewModel {
         let media = URLQueryItem(name: "media", value: "movie")
         let entity = URLQueryItem(name: "entity", value: "movie")
         let limit = URLQueryItem(name: "limit", value: "20")
-
+        
         components.queryItems =  [ search, media, entity, limit ]
 
         let url = components.url!
@@ -94,11 +98,10 @@ class SearchViewModel {
         /// Status Code가 200...300이 나왔을 때 진행될 수 있게 하는 Method
             .validate()
         /// 따로 JsonDecoder 인스턴스를 만들어주지 않아도 자동으로 해준다.
-            .responseDecodable(of: Result.self) {[unowned self] response in
-                /// unowned를 쓴 이유? : weak는 기본적으로 Optional Type이라서 코드가 더러워진다.
+            .responseDecodable(of: Result.self) {[weak self] response in
                 switch response.result {
                 case .success(let result):
-                    self.items = result.results
+                    self?.items = result.results
                     completion()
                 case .failure(let error):
                     print("Error! : \(error.localizedDescription)")

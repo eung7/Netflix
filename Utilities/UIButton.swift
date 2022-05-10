@@ -8,6 +8,7 @@
 import UIKit
 import Kingfisher
 
+/// Play/Pause Button Custom AnimationType
 private enum Animation {
   typealias Element = (
     duration: TimeInterval,
@@ -58,13 +59,17 @@ extension UIButton {
 
 class AnimationButton: UIButton {
     
+    /// isHighlighted 프로퍼티 오버라이드를 해서 didSet 사용
     override var isHighlighted: Bool {
         didSet {
+            /// Highlighted가 될 때마다 animationButton Method 실행
             self.animateButton()
         }
     }
     
+    /// 애니메이션이 되는 Method
     func animateButton() {
+        /// isHighlighted가 true와 false가 될 때마다 element가 새롭게 정의된다.
         let element = self.isHighlighted ? Animation.touchDown.element : Animation.touchUp.element
         
         UIView.animate(

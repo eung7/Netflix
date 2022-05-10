@@ -12,6 +12,8 @@ class MovieMainCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "MovieMainCollectionViewCell"
     
+    var playButtonCompletionHandler: (() -> Void)?
+    
     let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "img_header")
@@ -26,6 +28,7 @@ class MovieMainCollectionViewCell: UICollectionViewCell {
         config.image = UIImage(systemName: "play.fill")
         config.baseForegroundColor = .white
         button.configuration = config
+        button.addTarget(self, action: #selector(didTapInterstellarButton(_:)), for: .touchUpInside)
 
         return button
     }()
@@ -50,3 +53,8 @@ class MovieMainCollectionViewCell: UICollectionViewCell {
     }
 }
 
+private extension MovieMainCollectionViewCell {
+    @objc func didTapInterstellarButton(_ sender: UIButton) {
+        playButtonCompletionHandler?()
+    }
+}

@@ -142,9 +142,20 @@ extension HomeViewController: UICollectionViewDataSource {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCollectionViewCell.identifier, for: indexPath) as? MovieCollectionViewCell else {
             return UICollectionViewCell() }
         cell.backgroundColor = .systemBackground
-        
+
         switch indexPath.section {
         case 0:
+            /// completionHandler 클로저를 두어 재생 버튼이 클릭 되었을 때 로직 구현
+            mainCell.playButtonCompletionHandler = { [weak self] in
+                guard let self = self else { return }
+                let vc = PlayerViewController()
+                vc.prepareVideo(url: "https://video-ssl.itunes.apple.com/itunes-assets/Video111/v4/54/b7/37/54b737f0-63c2-77ed-44b3-4f7e2d34f386/mzvf_806821658861734960.640x354.h264lc.U.p.m4v")
+                vc.modalPresentationStyle = .fullScreen
+                
+                self.present(vc, animated: true) {
+                    vc.player?.play()
+                }
+            }
             return mainCell
         case 1:
             let movies = viewModel.awardMovies

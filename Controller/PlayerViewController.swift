@@ -47,6 +47,17 @@ class PlayerViewController: UIViewController {
         return button
     }()
     
+    lazy var starButton: UIButton = {
+        var config = UIButton.Configuration.borderless()
+        config.baseForegroundColor = .systemYellow
+        
+        let button = UIButton(configuration: config)
+        button.setImage(UIImage(systemName: "star"), for: .normal)
+        button.setImage(UIImage(systemName: "star.fill"), for: .selected)
+        
+        return button
+    }()
+    
     /// 취소 버튼
     lazy var backButton: UIButton = {
         var config = UIButton.Configuration.borderless()
@@ -105,6 +116,7 @@ class PlayerViewController: UIViewController {
             progressBar,
             timeRemainingLabel,
             backButton,
+            starButton
         ]
             .forEach { videoPlayerView.addSubview($0) }
         
@@ -131,6 +143,11 @@ class PlayerViewController: UIViewController {
         backButton.snp.makeConstraints { make in
             make.centerY.equalTo(videoTitleLabel)
             make.centerX.equalTo(timeRemainingLabel)
+        }
+        
+        starButton.snp.makeConstraints { make in
+            make.centerY.equalTo(videoTitleLabel)
+            make.trailing.equalTo(backButton.snp.leading).offset(-8)
         }
         
         view.addSubview(videoPlayerView)
@@ -222,8 +239,6 @@ private extension PlayerViewController {
     @objc func didTapPauseButton(_ sender: UIButton) {
         guard let player = player else { return }
         
-        /// 처음엔 sender.isSelected = false 가 들어오니까
-        ///
         let highlightImage = sender.isSelected ? UIImage(systemName: "pause.fill") : UIImage(systemName: "play.fill")
 
         if sender.isSelected == false {
@@ -258,11 +273,11 @@ private extension PlayerViewController {
     
     @objc func didTapBackground() {
         [
-            playButton,
-            videoTitleLabel,
-            progressBar,
-            timeRemainingLabel,
-            backButton,
+            self.playButton,
+            self.videoTitleLabel,
+            self.progressBar,
+            self.timeRemainingLabel,
+            self.backButton,
         ]
             .forEach { $0.isHidden = !$0.isHidden }
     }

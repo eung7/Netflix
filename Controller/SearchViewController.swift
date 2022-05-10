@@ -55,7 +55,7 @@ class SearchViewController: UIViewController {
         setupUI()
     }
     
-    /// AutoLayout Method by SnapKit
+    /// AutoLayout Method
     func setupUI() {
         view.addGestureRecognizer(tapGesture)
         
@@ -74,7 +74,7 @@ class SearchViewController: UIViewController {
     }
 }
 
-/// @objc Method는 모두 여기로
+// MARK: @objc Methods
 private extension SearchViewController {
     
     /// 빈 화면 터치시 모든 작업 종료

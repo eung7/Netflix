@@ -66,17 +66,16 @@ class SearchViewController: UIViewController {
             make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
         }
         
-        collectionView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.top.equalTo(searchBar.snp.bottom)
-            make.bottom.equalToSuperview()
+        collectionView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+            $0.top.equalTo(searchBar.snp.bottom)
+            $0.bottom.equalToSuperview()
         }
     }
 }
 
 // MARK: @objc Methods
 private extension SearchViewController {
-    
     /// 빈 화면 터치시 모든 작업 종료
     @objc func didTapBackground() {
         view.endEditing(true)
@@ -109,13 +108,12 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
     /// 특정 Cell이 클릭되었을 때
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // TODO: 특정셀이 클릭되었을 때 PlayerVC에서 동영상이 재생되도록 구현해야함
-        let trailerURL = viewModel.items[indexPath.row].trailer
-        let videoTitle = viewModel.items[indexPath.row].movieName
+        let movie = viewModel.items[indexPath.row]
         
         let vc = PlayerViewController()
+        vc.item = movie
         vc.modalPresentationStyle = .fullScreen
-        vc.prepareVideo(url: trailerURL)
-        vc.videoTitleLabel.text = videoTitle
+        vc.prepareVideo(item: movie)
         
         present(vc, animated: true, completion: {
             vc.player?.play()

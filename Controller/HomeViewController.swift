@@ -30,7 +30,7 @@ class HomeViewController: UIViewController {
         
         setupUI()
     }
-
+    
     /// Auto Layout Method
     func setupUI() {
         view.addSubview(collectionView)
@@ -48,7 +48,7 @@ class HomeViewController: UIViewController {
         /// sectionNumber [int] : sectionNumber마다 다르게 줄 수 있도록하는 인자
         /// env [NSCollectionLayoutEnvironment] : 사이즈, 인셋 등을 줄 수 있는 인자
         /// return [NSCollectionLayoutSection] : 만들어두었던 NSCollectionLayoutSection 객체를 넣어주면 최종적으로 Layout으로 반환됨
-        return UICollectionViewCompositionalLayout {[weak self] sectionNumber, env -> NSCollectionLayoutSection? in
+        return UICollectionViewCompositionalLayout {[weak self] sectionNumber, _ -> NSCollectionLayoutSection? in
             /// section 번호마다 다른 Layout을 설정하기 위해 switch 문
             switch sectionNumber {
             case 0:
@@ -147,14 +147,7 @@ extension HomeViewController: UICollectionViewDataSource {
         case 0:
             /// completionHandler 클로저를 두어 재생 버튼이 클릭 되었을 때 로직 구현
             mainCell.playButtonCompletionHandler = { [weak self] in
-                guard let self = self else { return }
-                let vc = PlayerViewController()
-                vc.prepareVideo(url: "https://video-ssl.itunes.apple.com/itunes-assets/Video111/v4/54/b7/37/54b737f0-63c2-77ed-44b3-4f7e2d34f386/mzvf_806821658861734960.640x354.h264lc.U.p.m4v")
-                vc.modalPresentationStyle = .fullScreen
                 
-                self.present(vc, animated: true) {
-                    vc.player?.play()
-                }
             }
             return mainCell
         case 1:

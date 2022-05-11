@@ -6,9 +6,14 @@
 //
 
 import UIKit
+import Kingfisher
 import SnapKit
 
 class SavedViewController: UIViewController {
+    
+    let starMovieManager = StarMoviesManager.shared
+    
+    let viewModel = SavedViewModel()
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -31,6 +36,10 @@ class SavedViewController: UIViewController {
         setupUI()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        collectionView.reloadData()
+    }
+    
     func setupUI() {
         view.addSubview(collectionView)
         
@@ -42,13 +51,32 @@ class SavedViewController: UIViewController {
 
 extension SavedViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return starMovieManager.starMovies.count
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedCollectionViewCell.identifier, for: indexPath) as? SavedCollectionViewCell else { return UICollectionViewCell() }
-        cell.backgroundColor = .blue
+        let imageURL = URL(string: starMovieManager.starMovies[indexPath.row].poster)
+        cell.imageView.kf.indicatorType = .activity
+        cell.imageView.kf.setImage(
+            with: imageURL,
+            placeholder: .none,
+            options: [.transition(.fade(0.3))],
+            completionHandler: nil
+        )
         
         return cell
+    }
+}
+
+extension SavedViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let movie = starMovieManager.starMovies[indexPath.row]
+        
+        let vc = PlayerViewController()
+        vc.modalPresentationStyle = .fullScreen
+        vc.prepareVideo(item: movie)
+        
+        present(vc, animated: true)
     }
 }

@@ -8,7 +8,6 @@
 import Foundation
 
 class SavedViewModel {
-    static let shared = SavedViewModel()
     
-    
+    static var starMovies: [Item] = []
 }

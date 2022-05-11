@@ -47,6 +47,7 @@ class SearchViewModel {
                     self.items = object.results
                     
                     /// @escaping Closure를 둔 이유는?
+                    ///
                     /// 1.
                     /// 사실 이 구문의 클로저는 fetchMovies가 끝난 다음에야 시작된다.
                     /// 왜냐하면 dataTask Method는 들어오는 결과 값을 비동기적으로 받기 때문이다.
@@ -74,7 +75,7 @@ class SearchViewModel {
         
         /// URLComponents는 한글, 띄어쓰기 등을 자동으로 인코딩해줌
         var components = URLComponents(string: "https://itunes.apple.com/search")!
-
+        
         let search = URLQueryItem(name: "term", value: term)
         let media = URLQueryItem(name: "media", value: "movie")
         let entity = URLQueryItem(name: "entity", value: "movie")

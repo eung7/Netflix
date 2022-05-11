@@ -11,6 +11,10 @@ import SnapKit
 
 class PlayerViewController: UIViewController {
     
+    let starMovieManager = StarMoviesManager.shared
+    
+    var item: Item?
+    
     /// 영상이 실행되는 객체인 AVPlayer
     var player: AVPlayer?
     
@@ -54,6 +58,7 @@ class PlayerViewController: UIViewController {
         let button = UIButton(configuration: config)
         button.setImage(UIImage(systemName: "star"), for: .normal)
         button.setImage(UIImage(systemName: "star.fill"), for: .selected)
+        button.addTarget(self, action: #selector(didTapStarButton(_:)), for: .touchUpInside)
         
         return button
     }()
@@ -158,10 +163,12 @@ class PlayerViewController: UIViewController {
     }
     
     /// urlString을 파라미터로 받아서 실제 동영상으로 준비해주는 Method
-    func prepareVideo(url: String) {
-        guard let url = URL(string: url) else { return }
+    func prepareVideo(item: Item) {
+        guard let url = URL(string: item.trailer) else { return }
         
         player = AVPlayer(url: url)
+        
+        videoTitleLabel.text = item.movieName
         
         /// AVPlayer를 View위에서 실행시키기 위해서는 AVPlayerLayer라는 객체가 필요함
         let playerLayer = AVPlayerLayer(player: player)
@@ -227,11 +234,6 @@ class PlayerViewController: UIViewController {
             progressBar.value = Float(CMTimeGetSeconds(currentTime) / CMTimeGetSeconds(duration))
         }
     }
-    
-    deinit {
-        /// 참조가 해제 되는지 확인
-        print("PlayerVC is deinited!")
-    }
 }
 
 // MARK: @objc Method Collection
@@ -256,6 +258,19 @@ private extension PlayerViewController {
         player?.pause()
         
         dismiss(animated: true)
+    }
+    
+    // TODO: [] 즐겨찾기 버튼을 클릭하면 savedMovies가 업데이트 되고 다시 Player에 되돌아 올때 즐겨찾기 정보 남기기
+    @objc func didTapStarButton(_ sender: UIButton) {
+        guard let item = item else { return }
+        
+        sender.isSelected = !sender.isSelected
+            
+        if sender.isSelected {
+            starMovieManager.addStarMovie(item: item)
+        } else {
+            starMovieManager.removeStarMovie(item: item)
+        }
     }
     
     /// Slider를 드래그 하면 실행되는 Method

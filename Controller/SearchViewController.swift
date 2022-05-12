@@ -107,14 +107,18 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
     
     /// 특정 Cell이 클릭되었을 때
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // TODO: 특정셀이 클릭되었을 때 PlayerVC에서 동영상이 재생되도록 구현해야함
         let movie = viewModel.items[indexPath.row]
         
         let vc = PlayerViewController()
-        vc.item = movie
         vc.modalPresentationStyle = .fullScreen
-        vc.prepareVideo(item: movie)
         
+        if let item = StarMoviesManager.shared.starMovies.first { $0.trailer == movie.trailer } {
+            vc.item = item
+            vc.prepareVideo(item: item)
+        } else {
+            vc.item = movie
+            vc.prepareVideo(item: movie)
+        }
         present(vc, animated: true, completion: {
             vc.player?.play()
         })

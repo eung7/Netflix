@@ -26,6 +26,7 @@ class SavedViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(SavedCollectionViewCell.self, forCellWithReuseIdentifier: SavedCollectionViewCell.identifier)
         collectionView.dataSource = self
+        collectionView.delegate = self
         
         return collectionView
     }()
@@ -76,7 +77,10 @@ extension SavedViewController: UICollectionViewDelegateFlowLayout {
         let vc = PlayerViewController()
         vc.modalPresentationStyle = .fullScreen
         vc.prepareVideo(item: movie)
+        vc.item = movie
         
-        present(vc, animated: true)
+        present(vc, animated: true) {
+            vc.player?.play()
+        }
     }
 }

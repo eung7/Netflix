@@ -25,9 +25,4 @@ class StarMoviesManager {
         guard let index = starMovies.firstIndex(of: item) else { return }
         starMovies.remove(at: index)
     }
-    
-    func updateStarMovie(item: Item, isStar: Bool) {
-        guard let index = starMovies.firstIndex(of: item) else { return }
-        starMovies[index].isStar = isStar
-    }
 }

@@ -169,6 +169,7 @@ class PlayerViewController: UIViewController {
         player = AVPlayer(url: url)
         
         videoTitleLabel.text = item.movieName
+        starButton.isSelected = item.isStar
         
         /// AVPlayer를 View위에서 실행시키기 위해서는 AVPlayerLayer라는 객체가 필요함
         let playerLayer = AVPlayerLayer(player: player)
@@ -262,11 +263,19 @@ private extension PlayerViewController {
     
     // TODO: [] 즐겨찾기 버튼을 클릭하면 savedMovies가 업데이트 되고 다시 Player에 되돌아 올때 즐겨찾기 정보 남기기
     @objc func didTapStarButton(_ sender: UIButton) {
-        guard let item = item else { return }
+        guard var item = item else { return }
         
         sender.isSelected = !sender.isSelected
-            
-        if sender.isSelected {
+        let starState = sender.isSelected
+        item.updateStar(starState)
+        
+        /// 만약 즐겨찾기 버튼을 눌렀을 때, isSelected가 true가 된다면
+        /// 배열에 현재 아이템을 추가해줘야한다.
+        /// 만약 isSelected가 false가 된다면
+        /// 배열에 현재 아이템이 있는지 부터 확인하고, 있으면 그 아이템을 지우고, 없으면 리턴될 수 있도록..
+        if starState {
+            /// 배열에 현재 아이템이 있는 경우와 아닌 경우 표현하기
+            guard starMovieManager.starMovies.contains(item) == false else { return }
             starMovieManager.addStarMovie(item: item)
         } else {
             starMovieManager.removeStarMovie(item: item)

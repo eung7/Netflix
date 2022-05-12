@@ -1,4 +1,18 @@
-# Eung7_Netflix
-Making clone netflix app on my own.
+# Clone Netflix App 만들기
 
-First ReadMe
++ No StoryBoard (Only Code)
+
+
+---
+
+## Library
+
++ SnapKit
++ Kingfisher
++ Alamofire
+
+--- 
+
+## Open API
+
++ Itunes Open Search API

@@ -11,8 +11,6 @@ import SnapKit
 
 class SavedViewController: UIViewController {
     
-    let starMovieManager = StarMoviesManager.shared
-    
     let viewModel = SavedViewModel()
     
     lazy var collectionView: UICollectionView = {
@@ -52,12 +50,12 @@ class SavedViewController: UIViewController {
 
 extension SavedViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return starMovieManager.starMovies.count
+        return viewModel.numberOfItemsInSection
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedCollectionViewCell.identifier, for: indexPath) as? SavedCollectionViewCell else { return UICollectionViewCell() }
-        let imageURL = URL(string: starMovieManager.starMovies[indexPath.row].poster)
+        let imageURL = URL(string: SavedViewModel.movies[indexPath.row].poster)
         cell.imageView.kf.indicatorType = .activity
         cell.imageView.kf.setImage(
             with: imageURL,
@@ -72,12 +70,11 @@ extension SavedViewController: UICollectionViewDataSource {
 
 extension SavedViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let movie = starMovieManager.starMovies[indexPath.row]
+        let movie = SavedViewModel.movies[indexPath.row]
         
         let vc = PlayerViewController()
         vc.modalPresentationStyle = .fullScreen
         vc.prepareVideo(item: movie)
-        vc.item = movie
         
         present(vc, animated: true) {
             vc.player?.play()

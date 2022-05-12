@@ -112,11 +112,9 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
         let vc = PlayerViewController()
         vc.modalPresentationStyle = .fullScreen
         
-        if let item = StarMoviesManager.shared.starMovies.first { $0.trailer == movie.trailer } {
-            vc.item = item
+        if let item = SavedViewModel.movies.first(where: { $0.trailer == movie.trailer }) {
             vc.prepareVideo(item: item)
         } else {
-            vc.item = movie
             vc.prepareVideo(item: movie)
         }
         present(vc, animated: true, completion: {

@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import CoreMedia
 
 class SearchViewModel {
     
@@ -20,10 +21,17 @@ class SearchViewModel {
     /// URLSession을 이용한 Network Method
     func fetchMovies(from term: String, completion: @escaping () -> Void) {
         /// 한글, 띄어쓰기 등의 인식을 위해 URLEncoding하는 Code
-        let term = term.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)!
+        var components = URLComponents(string: "https://itunes.apple.com/search")!
         
-        /// 너무 상수 선언이 많은 것 같아서 urlComponents들은 선언을 안해줬음.
-        let url = URL(string: "https://itunes.apple.com/search?term=\(term)&media=movie&entity=movie&limit=20")!
+        let movieName = URLQueryItem(name: "term", value: term)
+        let media = URLQueryItem(name: "media", value: "movie")
+        let entity = URLQueryItem(name: "entity", value: "movie")
+        let limit = URLQueryItem(name: "limit", value: "20")
+        
+        components.queryItems = [ movieName, media, entity, limit ]
+        
+        let url = components.url!
+        
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         

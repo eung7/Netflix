@@ -11,8 +11,6 @@ import SnapKit
 
 class PlayerViewController: UIViewController {
     
-    let starMovieManager = StarMoviesManager.shared
-    
     var item: Item?
     
     /// 영상이 실행되는 객체인 AVPlayer
@@ -170,6 +168,7 @@ class PlayerViewController: UIViewController {
         
         videoTitleLabel.text = item.movieName
         starButton.isSelected = item.isStar
+        self.item = item
         
         /// AVPlayer를 View위에서 실행시키기 위해서는 AVPlayerLayer라는 객체가 필요함
         let playerLayer = AVPlayerLayer(player: player)
@@ -275,10 +274,10 @@ private extension PlayerViewController {
         /// 배열에 현재 아이템이 있는지 부터 확인하고, 있으면 그 아이템을 지우고, 없으면 리턴될 수 있도록..
         if starState {
             /// 배열에 현재 아이템이 있는 경우와 아닌 경우 표현하기
-            guard starMovieManager.starMovies.contains(item) == false else { return }
-            starMovieManager.addStarMovie(item: item)
+            guard SavedViewModel.movies.contains(item) == false else { return }
+            SavedViewModel.shared.addStarMovie(item: item)
         } else {
-            starMovieManager.removeStarMovie(item: item)
+            SavedViewModel.shared.removeStarMovie(item: item)
         }
     }
     

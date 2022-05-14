@@ -11,6 +11,7 @@ import SnapKit
 
 class SavedViewController: UIViewController {
     
+    let manager = StarMovieManager.shared
     let viewModel = SavedViewModel()
     
     lazy var collectionView: UICollectionView = {
@@ -55,7 +56,7 @@ extension SavedViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SavedCollectionViewCell.identifier, for: indexPath) as? SavedCollectionViewCell else { return UICollectionViewCell() }
-        let imageURL = URL(string: SavedViewModel.movies[indexPath.row].poster)
+        let imageURL = URL(string: manager.starMovies[indexPath.row].poster)
         cell.imageView.kf.indicatorType = .activity
         cell.imageView.kf.setImage(
             with: imageURL,
@@ -70,11 +71,14 @@ extension SavedViewController: UICollectionViewDataSource {
 
 extension SavedViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let movie = SavedViewModel.movies[indexPath.row]
+        let movie = manager.starMovies[indexPath.row]
+        
+        print(movie.isStar)
         
         let vc = PlayerViewController()
         vc.modalPresentationStyle = .fullScreen
         vc.prepareVideo(item: movie)
+        
         
         present(vc, animated: true) {
             vc.player?.play()

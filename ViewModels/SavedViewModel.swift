@@ -9,21 +9,10 @@ import Foundation
 
 class SavedViewModel {
     
-    static let shared = SavedViewModel()
-    
-    static var movies: [Item] = []
-    
-    var numberOfItemsInSection: Int {
-        return SavedViewModel.movies.count
-    }
-    
-    func addStarMovie(item: Item) {
-        SavedViewModel.movies.append(item)
-    }
-    
-    func removeStarMovie(item: Item) {
-        guard let index = SavedViewModel.movies.firstIndex(of: item) else { return }
-        SavedViewModel.movies.remove(at: index)
-    }
+    let manager = StarMovieManager.shared
 
+    var numberOfItemsInSection: Int {
+        return manager.starMovies.count
+    }
 }
+

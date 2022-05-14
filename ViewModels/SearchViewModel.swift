@@ -80,7 +80,6 @@ class SearchViewModel {
     }
 
     func fetchMoviesWithAF(from term: String, completion: @escaping () -> Void) {
-        
         /// URLComponents는 한글, 띄어쓰기 등을 자동으로 인코딩해줌
         var components = URLComponents(string: "https://itunes.apple.com/search")!
         
@@ -88,7 +87,7 @@ class SearchViewModel {
         let media = URLQueryItem(name: "media", value: "movie")
         let entity = URLQueryItem(name: "entity", value: "movie")
         let limit = URLQueryItem(name: "limit", value: "20")
-        
+
         components.queryItems =  [ search, media, entity, limit ]
 
         let url = components.url!

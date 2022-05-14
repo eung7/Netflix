@@ -19,6 +19,8 @@ class PlayerViewController: UIViewController {
     /// 애니메이션에 사용될 Timer객체 정의
     var timer: Timer?
     
+    let viewModel = PlayerViewModel()
+    
     /// AVPlayer가 들어갈 UIView객체
     lazy var videoPlayerView: UIView = {
         let view = UIView()
@@ -50,8 +52,9 @@ class PlayerViewController: UIViewController {
     }()
     
     lazy var starButton: UIButton = {
-        var config = UIButton.Configuration.borderless()
+        var config = UIButton.Configuration.plain()
         config.baseForegroundColor = .systemYellow
+        config.baseBackgroundColor = .clear
         
         let button = UIButton(configuration: config)
         button.setImage(UIImage(systemName: "star"), for: .normal)
@@ -166,9 +169,10 @@ class PlayerViewController: UIViewController {
         
         player = AVPlayer(url: url)
         
-        videoTitleLabel.text = item.movieName
-        starButton.isSelected = item.isStar
         self.item = item
+        videoTitleLabel.text = item.movieName
+        
+        starButton.isSelected = item.isStar
         
         /// AVPlayer를 View위에서 실행시키기 위해서는 AVPlayerLayer라는 객체가 필요함
         let playerLayer = AVPlayerLayer(player: player)
@@ -260,25 +264,10 @@ private extension PlayerViewController {
         dismiss(animated: true)
     }
     
-    // TODO: [] 즐겨찾기 버튼을 클릭하면 savedMovies가 업데이트 되고 다시 Player에 되돌아 올때 즐겨찾기 정보 남기기
     @objc func didTapStarButton(_ sender: UIButton) {
-        guard var item = item else { return }
-        
+        guard let item = item else { return }
         sender.isSelected = !sender.isSelected
-        let starState = sender.isSelected
-        item.updateStar(starState)
-        
-        /// 만약 즐겨찾기 버튼을 눌렀을 때, isSelected가 true가 된다면
-        /// 배열에 현재 아이템을 추가해줘야한다.
-        /// 만약 isSelected가 false가 된다면
-        /// 배열에 현재 아이템이 있는지 부터 확인하고, 있으면 그 아이템을 지우고, 없으면 리턴될 수 있도록..
-        if starState {
-            /// 배열에 현재 아이템이 있는 경우와 아닌 경우 표현하기
-            guard SavedViewModel.movies.contains(item) == false else { return }
-            SavedViewModel.shared.addStarMovie(item: item)
-        } else {
-            SavedViewModel.shared.removeStarMovie(item: item)
-        }
+        viewModel.didTapStarButton(item: item, starState: sender.isSelected)
     }
     
     /// Slider를 드래그 하면 실행되는 Method
@@ -301,6 +290,7 @@ private extension PlayerViewController {
             self.progressBar,
             self.timeRemainingLabel,
             self.backButton,
+            self.starButton
         ]
             .forEach { $0.isHidden = !$0.isHidden }
     }

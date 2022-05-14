@@ -29,6 +29,7 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         
         setupUI()
+        StarMovieManager.shared.loadStarMovies()
     }
     
     /// Auto Layout Method

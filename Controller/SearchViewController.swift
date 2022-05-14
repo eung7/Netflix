@@ -12,6 +12,8 @@ import Kingfisher
 
 class SearchViewController: UIViewController {
     
+    let manager = StarMovieManager.shared
+    
     /// ViewModel Instance
     let viewModel = SearchViewModel()
     
@@ -112,7 +114,7 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
         let vc = PlayerViewController()
         vc.modalPresentationStyle = .fullScreen
         
-        if let item = SavedViewModel.movies.first(where: { $0.trailer == movie.trailer }) {
+        if let item = manager.starMovies.first(where: { $0.trailer == movie.trailer }) {
             vc.prepareVideo(item: item)
         } else {
             vc.prepareVideo(item: movie)
@@ -134,6 +136,7 @@ extension SearchViewController: UISearchBarDelegate {
             }
             view.endEditing(true)
         }
+        print(manager.starMovies)
     }
     
     /// SearchBar의 Text가 변경될 때마다 실행되는 Method

@@ -12,8 +12,6 @@ class PlayerViewModel {
     func didTapStarButton(item: Item, starState: Bool) {
         let manager = StarMovieManager.shared
         
-        // TODO: [x] starState 상태에 따른 구별하기
-        // TODO: [] item의 isStar 값 업데이트
         if starState {
             manager.addStarMovie(item: item)
             manager.updateStarMovie(item: item, starState: starState)

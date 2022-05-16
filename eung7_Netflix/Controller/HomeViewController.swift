@@ -136,19 +136,30 @@ extension HomeViewController: UICollectionViewDataSource {
         }
     }
     
-    /// Cell을 어떻게 표현할 건지?
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard
             let mainCell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieMainCollectionViewCell.identifier, for: indexPath) as? MovieMainCollectionViewCell,
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCollectionViewCell.identifier, for: indexPath) as? MovieCollectionViewCell else {
             return UICollectionViewCell() }
         cell.backgroundColor = .systemBackground
-
+        
         switch indexPath.section {
         case 0:
-            /// completionHandler 클로저를 두어 재생 버튼이 클릭 되었을 때 로직 구현
-            mainCell.playButtonCompletionHandler = { [weak self] in
-                
+            mainCell.didTapInterstellarButton = {
+                ServiceAPI.fetchMovies(from: "interstellar") { [weak self] items in
+                    let vc = PlayerViewController()
+                    vc.modalPresentationStyle = .fullScreen
+                    
+                    if let item = StarMovieManager.shared.starMovies.first(where: { $0.trailer == items[0].trailer }) {
+                        vc.prepareVideo(item: item)
+                    } else {
+                        vc.prepareVideo(item: items[0])
+                    }
+                    
+                    self?.present(vc, animated: true, completion: {
+                        vc.player?.play()
+                    })
+                }
             }
             return mainCell
         case 1:

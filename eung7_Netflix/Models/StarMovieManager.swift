@@ -13,7 +13,6 @@ class StarMovieManager {
     
     var starMovies: [Item] = []
     
-    
     func addStarMovie(item: Item) {
         starMovies.append(item)
     }

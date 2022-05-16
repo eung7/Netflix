@@ -12,7 +12,7 @@ class MovieMainCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "MovieMainCollectionViewCell"
     
-    var playButtonCompletionHandler: (() -> Void)?
+    var didTapInterstellarButton: (() -> Void) = { }
     
     let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -55,6 +55,6 @@ class MovieMainCollectionViewCell: UICollectionViewCell {
 
 private extension MovieMainCollectionViewCell {
     @objc func didTapInterstellarButton(_ sender: UIButton) {
-        playButtonCompletionHandler?()
+        didTapInterstellarButton()
     }
 }

@@ -84,7 +84,6 @@ private extension SearchViewController {
     }
 }
 
-
 // MARK: DataSource
 extension SearchViewController: UICollectionViewDataSource {
     
@@ -96,8 +95,6 @@ extension SearchViewController: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchCollectionViewCell.identifier, for: indexPath) as? SearchCollectionViewCell else { return UICollectionViewCell() }
         let url = URL(string: viewModel.items[indexPath.row].poster)
         
-        /// KingFisher를 이용하여 URL을 통해 이미지를 가져온다.
-        /// 이미지를 가져올 때 나타내는 애니메이션도 구현 <- KingFisher의 기능
         cell.imageView.kf.indicatorType = .activity
         cell.imageView.kf.setImage(with: url, placeholder: nil, options: [.transition(.fade(0.3))], completionHandler: nil)
         

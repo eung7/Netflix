@@ -12,7 +12,7 @@ class MovieMainCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "MovieMainCollectionViewCell"
     
-    var didTapInterstellarButton: (() -> Void) = { }
+    var didTapInterstellarButton: (() -> Void) = {}
     
     let imageView: UIImageView = {
         let imageView = UIImageView()

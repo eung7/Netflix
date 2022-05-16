@@ -106,7 +106,7 @@
 			children = (
 				E5060685281E928C00164A30 /* AppDelegate.swift */,
 				E5060687281E928C00164A30 /* SceneDelegate.swift */,
-				E583AA54282F85CA00F29985 /* Models */,
+				E583AA54282F85CA00F29985 /* Domain */,
 				E556500C28324381005229F1 /* ServiceAPI */,
 				E50606AF281FEF2C00164A30 /* ViewModels */,
 				E5060699281E940600164A30 /* Views */,
@@ -191,14 +191,14 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
-		E583AA54282F85CA00F29985 /* Models */ = {
+		E583AA54282F85CA00F29985 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
 				E50606C62822B8BE00164A30 /* Result.swift */,
 				E50606BA28201B2200164A30 /* DummyMovie.swift */,
 				E583AA4C282E883900F29985 /* StarMovieManager.swift */,
 			);
-			path = Models;
+			path = Domain;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -84,14 +84,14 @@ private extension SearchViewController {
     }
 }
 
+
+// MARK: DataSource
 extension SearchViewController: UICollectionViewDataSource {
     
-    /// Cell의 갯수
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.numberOfItems
     }
     
-    /// Cell의 표현 by KingFisher
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchCollectionViewCell.identifier, for: indexPath) as? SearchCollectionViewCell else { return UICollectionViewCell() }
         let url = URL(string: viewModel.items[indexPath.row].poster)
@@ -105,6 +105,7 @@ extension SearchViewController: UICollectionViewDataSource {
     }
 }
 
+// MARK: Delegate
 extension SearchViewController: UICollectionViewDelegateFlowLayout {
     
     /// 특정 Cell이 클릭되었을 때
@@ -131,9 +132,11 @@ extension SearchViewController: UISearchBarDelegate {
     /// SearchButton(Return)이 클릭되었을 때
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let text = searchBar.text {
-            viewModel.fetchMovies(from: text) {[weak self] in
+            ServiceAPI.fetchMovies(from: text) { [weak self] items in
+                self?.viewModel.items = items
                 self?.collectionView.reloadData()
             }
+            
             view.endEditing(true)
         }
         print(manager.starMovies)
@@ -142,9 +145,11 @@ extension SearchViewController: UISearchBarDelegate {
     /// SearchBar의 Text가 변경될 때마다 실행되는 Method
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if let text = searchBar.text {
-            viewModel.fetchMovies(from: text) {[weak self] in
+            ServiceAPI.fetchMovies(from: text) { [weak self] items in
+                self?.viewModel.items = items
                 self?.collectionView.reloadData()
             }
+
         }
     }
 }

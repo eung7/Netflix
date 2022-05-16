@@ -11,7 +11,7 @@ class StarMovieManager {
     
     static let shared = StarMovieManager()
     
-    var starMovies: [Item] = []
+    var starMovies: [Item] = [] 
     
     func addStarMovie(item: Item) {
         starMovies.append(item)

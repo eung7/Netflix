@@ -30,7 +30,7 @@
 
 + UICollectionViewCompositionalLayout
 + PlayerView UI : able to move UISlider, RemainingTime over video play time
-+ MVVM Architecture (will Update)
++ MVVM Architecture 
 
 
 

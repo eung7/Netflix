@@ -22,7 +22,7 @@ class MovieMainCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
-    let playButton: UIButton = {
+    lazy var playButton: UIButton = {
         let button = UIButton()
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "play.fill")

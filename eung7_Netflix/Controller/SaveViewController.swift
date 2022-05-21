@@ -68,8 +68,7 @@ extension SaveViewController: UICollectionViewDataSource {
 
 extension SaveViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let movie = StarMovieManager.shared.verifyInStarMovies(StarMovieViewModel.starMovies[indexPath.row])
-        print(movie)
+        let movie = viewModel.verifyInStarMovies(StarMovie.movies[indexPath.row])
         let vc = PlayerViewController()
         vc.modalPresentationStyle = .fullScreen
         vc.prepareVideo(movie)

@@ -8,10 +8,20 @@
 import Foundation
 
 class PlayerViewModel {
-    var currentMovie: StarMovieViewModel!
+    var currentMovie: StarMovie!
     
-    init(_ movie: StarMovieViewModel) {
+    init(_ movie: StarMovie) {
         self.currentMovie = movie
+    }
+}
+
+extension PlayerViewModel {
+    var trailerURL: URL {
+        return URL(string: currentMovie.trailer)!
+    }
+    
+    var movieName: String {
+        return currentMovie.movieName
     }
 }
 
@@ -19,11 +29,10 @@ extension PlayerViewModel {
     func didTapStarbutton(_ isStar: Bool) {
         if isStar == true {
             currentMovie.updateIsStar(isStar)
-            StarMovieViewModel.starMovies.append(currentMovie)
+            StarMovie.movies.append(currentMovie)
         } else {
-            if let index = StarMovieViewModel.starMovies.firstIndex(where: { $0.trailer == currentMovie.trailer }) {
-                currentMovie.updateIsStar(isStar)
-                StarMovieViewModel.starMovies.remove(at: index)
+            if let index = StarMovie.movies.firstIndex(where: { $0.trailer == currentMovie.trailer }) {
+                StarMovie.movies.remove(at: index)
             }
         }
     }

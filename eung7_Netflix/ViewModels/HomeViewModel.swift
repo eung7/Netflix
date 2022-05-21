@@ -8,24 +8,35 @@
 import Foundation
 import UIKit
 
-enum Section: Int, CaseIterable {
-    case award
-    case hot
-    case my
+class HomeViewModel {
+    var awardMovies: [DummyMovie] = []
+    var hotMovies: [DummyMovie] = []
+    var myMovies: [DummyMovie] = []
+    
+    init() {
+        fetchDummyMovies(.my)
+        fetchDummyMovies(.hot)
+        fetchDummyMovies(.award)
+    }
 }
 
-class HomeViewModel {
-    func fetchMovies(_ type: Section) -> [DummyMovie] {
-        switch type {
-        case .award:
-            let movies = (1..<10).map { DummyMovie(type: .award, thumbnail: UIImage(named: "img_movie_\($0)")!) }
-            return movies
-        case .hot:
-            let movies = (10..<19).map { DummyMovie(type: .hot, thumbnail: UIImage(named: "img_movie_\($0)")!) }
-            return movies
-        case .my:
-            let movies = (1..<10).map { $0 * 2 }.map { DummyMovie(type: .my, thumbnail: UIImage(named: "img_movie_\($0)")!) }
-            return movies
+extension HomeViewModel {
+    var numberOfSections: Int {
+        return Section.allCases.count + 1
+    }
+}
+
+extension HomeViewModel {
+    func fetchDummyMovies(_ type: Section) {
+        HomeService.fetchMovies(type) { dummyMovies in
+            switch type {
+            case .award:
+                self.awardMovies = dummyMovies
+            case .hot:
+                self.hotMovies = dummyMovies
+            case .my:
+                self.myMovies = dummyMovies
+            }
         }
     }
     
@@ -43,20 +54,11 @@ class HomeViewModel {
     func numberOfItemsInSection(_ type: Section) -> Int {
         switch type {
         case .award:
-            return fetchMovies(.award).count
+            return awardMovies.count
         case .hot:
-            return fetchMovies(.hot).count
+            return hotMovies.count
         case .my:
-            return fetchMovies(.my).count
+            return myMovies.count
         }
     }
-    
-    func numberOfSections() -> Int {
-        return Section.allCases.count + 1
-    }
-}
-
-extension HomeViewModel {
-
-    
 }

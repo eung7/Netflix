@@ -45,8 +45,11 @@ class SearchViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupUI()
+        
+        viewModel.toUpdate = { [weak self] in
+            self?.collectionView.reloadData()
+        }
     }
     
     func setupUI() {
@@ -80,7 +83,7 @@ extension SearchViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchCollectionViewCell.identifier, for: indexPath) as? SearchCollectionViewCell else { return UICollectionViewCell() }
-        let url = URL(string: viewModel.movies[indexPath.row].poster)
+        let url = viewModel.getPosterURL(indexPath.row)
         cell.imageView.kf.indicatorType = .activity
         cell.imageView.kf.setImage(with: url, placeholder: nil, options: [.transition(.fade(0.3))], completionHandler: nil)
         
@@ -92,7 +95,7 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedMovie = viewModel.movies[indexPath.row]
         let vc = PlayerViewController()
-        vc.prepareVideo(viewModel.verifyInStarMovies(selectedMovie))
+        vc.prepareVideo(StarMovieManager.shared.verifyInStarMovies(selectedMovie))
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true, completion: {
             vc.player?.play()
@@ -104,20 +107,13 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let text = searchBar.text {
-            ServiceAPI.fetchMovies(from: text) { [weak self] movies in
-                guard let self = self else { return }
-                self.viewModel.movies = movies.map { self.viewModel.createStarMovie($0, isStar: false)}
-                self.collectionView.reloadData()
-            }
+            viewModel.fetchMovies(text)
+            collectionView.reloadData()
             view.endEditing(true)
         }
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        ServiceAPI.fetchMovies(from: searchText) { [weak self] movies in
-            guard let self = self else { return }
-            self.viewModel.movies = movies.map { self.viewModel.createStarMovie($0, isStar: false)}
-            self.collectionView.reloadData()
-        }
+        viewModel.fetchMovies(searchText)
     }
 }

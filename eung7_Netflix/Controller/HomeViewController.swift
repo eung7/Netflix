@@ -88,7 +88,7 @@ class HomeViewController: UIViewController {
 extension HomeViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return viewModel.numberOfSections()
+        return viewModel.numberOfSections
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -116,28 +116,26 @@ extension HomeViewController: UICollectionViewDataSource {
         switch indexPath.section {
         case 0:
             mainCell.didTapInterstellarButton = {
-                ServiceAPI.fetchMovies(from: "interstellar") { [weak self] movies in
-                    guard let self = self else { return }
+                Service.fetchStarMovies("interstellar") { [weak self] movies in
                     let vc = PlayerViewController(); vc.modalPresentationStyle = .fullScreen
-                    let movie = StarMovieManager.shared.verifyInStarMovies(StarMovieManager.shared.createStarMovie(movies[0], isStar: false))
-                    vc.prepareVideo(movie)
-                    self.present(vc, animated: true, completion: {
+                    vc.prepareVideo(StarMovieManager.shared.verifyInStarMovies(movies[0]))
+                    self?.present(vc, animated: true, completion: {
                         vc.player?.play()
                     })
                 }
             }
             return mainCell
         case 1:
-            let movies = viewModel.fetchMovies(.award)
-            cell.movieImage.image = movies[indexPath.row].thumbnail
+            let image = viewModel.awardMovies[indexPath.row].thumbnail
+            cell.movieImage.image = image
             return cell
         case 2:
-            let movies = viewModel.fetchMovies(.hot)
-            cell.movieImage.image = movies[indexPath.row].thumbnail
+            let image = viewModel.hotMovies[indexPath.row].thumbnail
+            cell.movieImage.image = image
             return cell
         case 3:
-            let movies = viewModel.fetchMovies(.my)
-            cell.movieImage.image = movies[indexPath.row].thumbnail
+            let image = viewModel.myMovies[indexPath.row].thumbnail
+            cell.movieImage.image = image
             return cell
         default:
             return UICollectionViewCell()

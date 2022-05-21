@@ -9,12 +9,21 @@ import Foundation
 
 class SaveViewModel {
     var numberOfItemsInSection: Int {
-        return StarMovieViewModel.starMovies.count
+        return StarMovie.movies.count
     }
 }
 
 extension SaveViewModel {
     func getThumbnailURL(_ index: Int) -> URL {
-        return URL(string: StarMovieViewModel.starMovies[index].poster)!
+        return URL(string: StarMovie.movies[index].poster)!
     }
+    
+    func verifyInStarMovies(_ movie: StarMovie) -> StarMovie {
+        if let starMovie = StarMovie.movies.first(where: { $0.trailer == movie.trailer }) {
+            return starMovie
+        } else {
+            return movie
+        }
+    }
+
 }

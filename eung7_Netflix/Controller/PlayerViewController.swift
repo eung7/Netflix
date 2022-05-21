@@ -147,13 +147,13 @@ class PlayerViewController: UIViewController {
         }
     }
     
-    func prepareVideo(_ movie: StarMovieViewModel) {
+    func prepareVideo(_ movie: StarMovie) {
         viewModel = PlayerViewModel(movie)
         starButton.isSelected = viewModel.currentMovie.isStar
         
-        guard let url = URL(string: movie.trailer) else { return }
+        let url = viewModel.trailerURL
         player = AVPlayer(url: url)
-        videoTitleLabel.text = movie.movieName
+        videoTitleLabel.text = viewModel.movieName
         
         let playerLayer = AVPlayerLayer(player: player)
         playerLayer.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.height, height: UIScreen.main.bounds.width)

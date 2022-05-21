@@ -2,7 +2,7 @@
 //  Movie.swift
 //  eung7_Netflix
 //
-//  Created by 김응철 on 2022/05/04.
+//  Created by 김응철 on 2022/05/21.
 //
 
 import Foundation

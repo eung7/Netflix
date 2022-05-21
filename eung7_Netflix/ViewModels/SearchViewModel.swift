@@ -8,19 +8,27 @@
 import Foundation
 
 class SearchViewModel {
-    var movies: [StarMovieViewModel] = []
+    var toUpdate: () -> Void = {}
+    var movies: [StarMovie] = []
 }
 
 extension SearchViewModel {
-    func createStarMovie(_ movie: Movie, isStar: Bool) -> StarMovieViewModel {
-        return StarMovieViewModel(poster: movie.poster, movieName: movie.movieName, trailer: movie.trailer, isStar: false)
+    var numberOfItemsInSection: Int {
+        return movies.count
+    }
+}
+
+extension SearchViewModel {
+    func fetchMovies(_ from: String) {
+        Service.fetchStarMovies(from) { [weak self] starMovies in
+            DispatchQueue.main.async {
+                self?.movies = starMovies
+                self?.toUpdate()
+            }
+        }
     }
     
-    func verifyInStarMovies(_ selectedMovie: StarMovieViewModel) -> StarMovieViewModel {
-        if let starMovie = StarMovieViewModel.starMovies.first(where: { $0.trailer == selectedMovie.trailer }) {
-            return starMovie
-        } else {
-            return selectedMovie
-        }
+    func getPosterURL(_ index: Int) -> URL {
+        return URL(string: movies[index].poster)!
     }
 }

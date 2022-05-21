@@ -11,22 +11,15 @@ import SnapKit
 import Kingfisher
 
 class SearchViewController: UIViewController {
-    
-    let manager = StarMovieManager.shared
-    
-    /// ViewModel Instance
     let viewModel = SearchViewModel()
     
-    /// SearchBar 속성 정의
     lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
-        /// deleate를 받기위해 lazy 속성을 부여했다. 만약 부여하지 않으면 Class 초기화 전에 상수가 초기화 되지 않음..
         searchBar.delegate = self
         
         return searchBar
     }()
     
-    /// tapGesture 속성 정의
     lazy var tapGesture: UITapGestureRecognizer = {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapBackground))
         tapGesture.cancelsTouchesInView = false
@@ -34,7 +27,6 @@ class SearchViewController: UIViewController {
         return tapGesture
     }()
     
-    /// CollectionView 속성 정의
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(
@@ -57,7 +49,6 @@ class SearchViewController: UIViewController {
         setupUI()
     }
     
-    /// AutoLayout Method
     func setupUI() {
         view.addGestureRecognizer(tapGesture)
         
@@ -76,25 +67,20 @@ class SearchViewController: UIViewController {
     }
 }
 
-// MARK: @objc Methods
 private extension SearchViewController {
-    /// 빈 화면 터치시 모든 작업 종료
     @objc func didTapBackground() {
         view.endEditing(true)
     }
 }
 
-// MARK: DataSource
 extension SearchViewController: UICollectionViewDataSource {
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.numberOfItems
+        return viewModel.movies.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchCollectionViewCell.identifier, for: indexPath) as? SearchCollectionViewCell else { return UICollectionViewCell() }
-        let url = URL(string: viewModel.items[indexPath.row].poster)
-        
+        let url = URL(string: viewModel.movies[indexPath.row].poster)
         cell.imageView.kf.indicatorType = .activity
         cell.imageView.kf.setImage(with: url, placeholder: nil, options: [.transition(.fade(0.3))], completionHandler: nil)
         
@@ -102,52 +88,36 @@ extension SearchViewController: UICollectionViewDataSource {
     }
 }
 
-// MARK: Delegate
 extension SearchViewController: UICollectionViewDelegateFlowLayout {
-    
-    /// 특정 Cell이 클릭되었을 때
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let movie = viewModel.items[indexPath.row]
-        
+        let selectedMovie = viewModel.movies[indexPath.row]
         let vc = PlayerViewController()
+        vc.prepareVideo(viewModel.verifyInStarMovies(selectedMovie))
         vc.modalPresentationStyle = .fullScreen
-        
-        if let item = manager.starMovies.first(where: { $0.trailer == movie.trailer }) {
-            vc.prepareVideo(item: item)
-        } else {
-            vc.prepareVideo(item: movie)
-        }
         present(vc, animated: true, completion: {
             vc.player?.play()
         })
     }
 }
 
-/// SearchBar 관련 Method
+// MARK: SearchBarDelegate
 extension SearchViewController: UISearchBarDelegate {
-    
-    /// SearchButton(Return)이 클릭되었을 때
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let text = searchBar.text {
-            ServiceAPI.fetchMovies(from: text) { [weak self] items in
-                self?.viewModel.items = items
-                self?.collectionView.reloadData()
+            ServiceAPI.fetchMovies(from: text) { [weak self] movies in
+                guard let self = self else { return }
+                self.viewModel.movies = movies.map { self.viewModel.createStarMovie($0, isStar: false)}
+                self.collectionView.reloadData()
             }
-            
             view.endEditing(true)
         }
-        print(manager.starMovies)
     }
     
-    /// SearchBar의 Text가 변경될 때마다 실행되는 Method
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if let text = searchBar.text {
-            ServiceAPI.fetchMovies(from: text) { [weak self] items in
-                self?.viewModel.items = items
-                self?.collectionView.reloadData()
-            }
-
+        ServiceAPI.fetchMovies(from: searchText) { [weak self] movies in
+            guard let self = self else { return }
+            self.viewModel.movies = movies.map { self.viewModel.createStarMovie($0, isStar: false)}
+            self.collectionView.reloadData()
         }
     }
 }
-

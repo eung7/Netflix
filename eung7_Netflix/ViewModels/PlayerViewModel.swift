@@ -8,20 +8,23 @@
 import Foundation
 
 class PlayerViewModel {
+    var currentMovie: StarMovieViewModel!
     
-    func didTapStarButton(item: Item, starState: Bool) {
-        let manager = StarMovieManager.shared
-        
-        if starState {
-            manager.addStarMovie(item: item)
-            manager.updateStarMovie(item: item, starState: starState)
-        } else {
-            manager.removeStarMovie(item: item)
-            manager.updateStarMovie(item: item, starState: starState)
-        }
-        
-        manager.saveStarMovies()
-        print(manager.starMovies)
+    init(_ movie: StarMovieViewModel) {
+        self.currentMovie = movie
     }
 }
 
+extension PlayerViewModel {
+    func didTapStarbutton(_ isStar: Bool) {
+        if isStar == true {
+            currentMovie.updateIsStar(isStar)
+            StarMovieViewModel.starMovies.append(currentMovie)
+        } else {
+            if let index = StarMovieViewModel.starMovies.firstIndex(where: { $0.trailer == currentMovie.trailer }) {
+                currentMovie.updateIsStar(isStar)
+                StarMovieViewModel.starMovies.remove(at: index)
+            }
+        }
+    }
+}

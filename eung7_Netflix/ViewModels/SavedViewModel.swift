@@ -7,12 +7,14 @@
 
 import Foundation
 
-class SavedViewModel {
-    
-    let manager = StarMovieManager.shared
-
+class SaveViewModel {
     var numberOfItemsInSection: Int {
-        return manager.starMovies.count
+        return StarMovieViewModel.starMovies.count
     }
 }
 
+extension SaveViewModel {
+    func getThumbnailURL(_ index: Int) -> URL {
+        return URL(string: StarMovieViewModel.starMovies[index].poster)!
+    }
+}

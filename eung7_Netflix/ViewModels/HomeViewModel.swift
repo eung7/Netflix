@@ -9,31 +9,14 @@ import Foundation
 import UIKit
 
 enum Section: Int, CaseIterable {
-    case main
     case award
     case hot
     case my
-    
-    var sectionTitle: String {
-        switch self {
-        case .award:
-            return "아카데미 호평 현황"
-        case .hot:
-            return "취향저격 HOT 콘텐츠"
-        case .my:
-            return "내가 찜한 콘텐츠"
-        default:
-            return ""
-        }
-    }
 }
 
 class HomeViewModel {
-    
-    func fetchMovies(type: Section) -> [DummyMovie]? {
+    func fetchMovies(_ type: Section) -> [DummyMovie] {
         switch type {
-        case .main:
-            return nil
         case .award:
             let movies = (1..<10).map { DummyMovie(type: .award, thumbnail: UIImage(named: "img_movie_\($0)")!) }
             return movies
@@ -45,19 +28,35 @@ class HomeViewModel {
             return movies
         }
     }
-
-    var awardMovies: [DummyMovie] {
-        let movies = (1..<10).map { DummyMovie(type: .award, thumbnail: UIImage(named: "img_movie_\($0)")!) }
-        return movies
+    
+    func fetchSectionTitle(_ type: Section) -> String {
+        switch type {
+        case .award:
+            return "아카데미 호평 현황"
+        case .hot:
+            return "취향저격 HOT 콘텐츠"
+        case .my:
+            return "내가 찜한 콘텐츠"
+        }
     }
-
-    var hotMovies: [DummyMovie] {
-        let movies = (10..<19).map { DummyMovie(type: .hot, thumbnail: UIImage(named: "img_movie_\($0)")!) }
-        return movies
+    
+    func numberOfItemsInSection(_ type: Section) -> Int {
+        switch type {
+        case .award:
+            return fetchMovies(.award).count
+        case .hot:
+            return fetchMovies(.hot).count
+        case .my:
+            return fetchMovies(.my).count
+        }
     }
-
-    var myMovies: [DummyMovie] {
-        let movies = (1..<10).map { $0 * 2 }.map { DummyMovie(type: .my, thumbnail: UIImage(named: "img_movie_\($0)")!) }
-        return movies
+    
+    func numberOfSections() -> Int {
+        return Section.allCases.count + 1
     }
+}
+
+extension HomeViewModel {
+
+    
 }

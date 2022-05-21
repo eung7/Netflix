@@ -14,7 +14,7 @@ class MainTabBarController: UITabBarController {
     
     // 사용하지 않는 Mock VC
     let upcomingVideoVC = UpcomingVideoViewController()
-    let savedVC = SavedViewController()
+    let savedVC = SaveViewController()
     let settingVC = SettingViewController()
     
     let homeTab: UITabBarItem = {

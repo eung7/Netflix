@@ -6,16 +6,21 @@
 //
 
 import Foundation
-import Alamofire
-import CoreMedia
 
 class SearchViewModel {
+    var movies: [StarMovieViewModel] = []
+}
+
+extension SearchViewModel {
+    func createStarMovie(_ movie: Movie, isStar: Bool) -> StarMovieViewModel {
+        return StarMovieViewModel(poster: movie.poster, movieName: movie.movieName, trailer: movie.trailer, isStar: false)
+    }
     
-    let manager = StarMovieManager.shared
-    
-    var items: [Item] = []
-    
-    var numberOfItems: Int {
-        return items.count
+    func verifyInStarMovies(_ selectedMovie: StarMovieViewModel) -> StarMovieViewModel {
+        if let starMovie = StarMovieViewModel.starMovies.first(where: { $0.trailer == selectedMovie.trailer }) {
+            return starMovie
+        } else {
+            return selectedMovie
+        }
     }
 }

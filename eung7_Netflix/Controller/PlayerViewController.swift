@@ -11,6 +11,7 @@ import SnapKit
 
 class PlayerViewController: UIViewController {
     var viewModel: PlayerViewModel!
+    
     var player: AVPlayer?
     var timer: Timer?
     
@@ -148,22 +149,22 @@ class PlayerViewController: UIViewController {
     }
     
     func prepareVideo(_ movie: StarMovie) {
-        viewModel = PlayerViewModel(movie)
-        starButton.isSelected = viewModel.currentMovie.isStar
-        
-        let url = viewModel.trailerURL
-        player = AVPlayer(url: url)
-        videoTitleLabel.text = viewModel.movieName
-        
-        let playerLayer = AVPlayerLayer(player: player)
-        playerLayer.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.height, height: UIScreen.main.bounds.width)
-        videoPlayerView.layer.addSublayer(playerLayer)
-        
-        let interval = CMTime(seconds: 0.001, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
-        player?.addPeriodicTimeObserver(forInterval:interval, queue: DispatchQueue.main, using: { [weak self] currentTime in
-            self?.updateSlider(currentTime)
-            self?.updateRemainingText(currentTime)
-        })
+        viewModel.prepareVideo(movie) { url in
+            starButton.isSelected = viewModel.currentMovie.isStar
+            videoTitleLabel.text = viewModel.movieName
+            player = AVPlayer(url: url)
+            
+            let playerLayer = AVPlayerLayer(player: player)
+            playerLayer.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.height, height: UIScreen.main.bounds.width)
+            videoPlayerView.layer.addSublayer(playerLayer)
+            
+            let interval = CMTime(seconds: 0.001, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+            player?.addPeriodicTimeObserver(forInterval:interval,
+                                            queue: DispatchQueue.main,
+                                            using: { [weak self] currentTime in
+                self?.updateSlider(currentTime)
+                self?.updateRemainingText(currentTime) })
+        }
     }
 }
 
@@ -171,20 +172,7 @@ class PlayerViewController: UIViewController {
 extension PlayerViewController {
     func updateRemainingText(_ currentTime: CMTime) {
         guard let duration = player?.currentItem?.duration else { return }
-        
-        let totalTime = CMTimeGetSeconds(duration)
-        let remainingTime = totalTime - CMTimeGetSeconds(currentTime)
-        let min = remainingTime / 60
-        let sec = remainingTime.truncatingRemainder(dividingBy: 60)
-        
-        let formatter = NumberFormatter()
-        formatter.minimumIntegerDigits = 2
-        formatter.minimumFractionDigits = 0
-        formatter.roundingMode = .down
-        guard let minStr = formatter.string(from: NSNumber(value: min)),
-              let secStr = formatter.string(from: NSNumber(value: sec)) else { return }
-        
-        self.timeRemainingLabel.text = "\(minStr):\(secStr)"
+        self.timeRemainingLabel.text = viewModel.updateRemainingText(duration, currentTime: currentTime)
     }
     
     func updateSlider(_ currentTime: CMTime) {
@@ -202,7 +190,6 @@ extension PlayerViewController {
 extension PlayerViewController {
     @objc func didTapPauseButton(_ sender: UIButton) {
         guard let player = player else { return }
-        
         let highlightImage = sender.isSelected ? UIImage(systemName: "pause.fill") : UIImage(systemName: "play.fill")
 
         if sender.isSelected == false {
@@ -228,10 +215,8 @@ extension PlayerViewController {
     
     @objc func didChangedProgressBar(_ sender: UISlider) {
         guard let duration = player?.currentItem?.duration else { return }
-        
-        let value = Float64(sender.value) * CMTimeGetSeconds(duration)
-        let seekTime = CMTime(value: CMTimeValue(value), timescale: 1)
-        player?.seek(to: seekTime)
+        let time = viewModel.didChangedProgressBar(duration, value: Float64(sender.value))
+        player?.seek(to: time)
     }
     
     @objc func didTapBackground() {

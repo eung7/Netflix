@@ -78,11 +78,14 @@ private extension SearchViewController {
 
 extension SearchViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.movies.count
+        return viewModel.numberOfItemsInSection
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchCollectionViewCell.identifier, for: indexPath) as? SearchCollectionViewCell else { return UICollectionViewCell() }
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: SearchCollectionViewCell.identifier,
+            for: indexPath
+        ) as? SearchCollectionViewCell else { return UICollectionViewCell() }
         let url = viewModel.getPosterURL(indexPath.row)
         cell.imageView.kf.indicatorType = .activity
         cell.imageView.kf.setImage(with: url, placeholder: nil, options: [.transition(.fade(0.3))], completionHandler: nil)

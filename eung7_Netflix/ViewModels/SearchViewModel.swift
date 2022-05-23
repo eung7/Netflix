@@ -6,16 +6,16 @@
 //
 
 import Foundation
+import UIKit
 
 class SearchViewModel {
-    var toUpdate: () -> Void = {}
     var movies: [StarMovie] = []
+    var toUpdate: () -> Void = {}
 }
 
 extension SearchViewModel {
-    var numberOfItemsInSection: Int {
-        return movies.count
-    }
+    var numberOfItemsInSection: Int { return movies.count }
+    func getPosterURL(_ index: Int) -> URL { return URL(string: movies[index].poster)! }
 }
 
 extension SearchViewModel {
@@ -26,9 +26,5 @@ extension SearchViewModel {
                 self?.toUpdate()
             }
         }
-    }
-    
-    func getPosterURL(_ index: Int) -> URL {
-        return URL(string: movies[index].poster)!
     }
 }

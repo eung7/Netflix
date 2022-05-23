@@ -25,9 +25,9 @@ class Repository {
             .responseDecodable(of: Result.self) { response in
                 switch response.result {
                 case .success(let result):
-                    DispatchQueue.main.async {
+//                    DispatchQueue.main.async {
                         completion(result.results)
-                    }
+//                    }
                 case .failure(let error):
                     print("Error! : \(error.localizedDescription)")
                 }

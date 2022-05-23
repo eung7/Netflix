@@ -13,9 +13,9 @@ class Service {
     static func fetchStarMovies(_ from: String, completion: @escaping ([StarMovie]) -> Void) {
         Repository.fetchMovies(from: from) { movies in
             let starMovies = movies.map { return StarMovie(poster: $0.poster, movieName: $0.movieName, trailer: $0.trailer, isStar: false)}
-            DispatchQueue.main.async {
+//            DispatchQueue.main.async {
                 completion(starMovies)
-            }
+//            }
         }
     }
 }

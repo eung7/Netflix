@@ -1,5 +1,9 @@
 # Making Clone Netflix App on my own
 
++ Architecture Structure OverView
+<img width="498" alt="image" src="https://user-images.githubusercontent.com/97531269/169941904-aa43882d-56de-41ed-a230-8650f564495a.png">
+
+
 ---
 
 ## Main
